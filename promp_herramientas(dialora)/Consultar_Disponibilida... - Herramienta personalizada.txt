@@ -1,0 +1,30 @@
+{
+  "name": "Consultar_Disponibilidad_Calendario",
+  "description": "Ejecuta esta herramienta obligatoriamente cuando el paciente indique el especialista y el día que desea su cita para buscar horarios disponibles.",
+  "pre_call_message": "Estoy revisando la disponibilidad, deme un momento.",
+  "parameters": {
+    "required": [
+      "Consultar_Horario",
+      "especialista"
+    ],
+    "properties": {
+      "especialista": {
+        "type": "string",
+        "description": "Instrucción estricta: Envía el nombre del especialista seleccionado (Doctora Ana Mariel García o Doctor Juan Carlos González) para filtrar el calendario."
+      },
+      "Consultar_Horario": {
+        "type": "string",
+        "description": "Instrucción estricta: Captura el día exacto que menciona el paciente. Ejemplos obligatorios a enviar: 'mañana', 'pasado mañana', 'el próximo martes', 'el 17 de febrero'. Envía solo este texto, sin agregar nada más."
+      }
+    }
+  },
+  "value": {
+    "method": "POST",
+    "param": {
+      "especialista": "%(especialista)s",
+      "Consultar_Horario": "%(Consultar_Horario)s"
+    },
+    "url": "https://hook.us2.make.com/i0n81e47mddgawqemu2ozm74tv33s4id",
+    "api_token": "cal_live_dfdbc2cb9c8927f15199289c0ea38d86"
+  }
+}

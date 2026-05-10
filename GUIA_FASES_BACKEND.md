@@ -1,0 +1,93 @@
+# Guia fase por fase (agenda conversacional)
+
+## Donde compartir claves de forma segura
+
+No compartas claves en el chat.
+
+1. Crea este archivo local en tu maquina:
+   - `c:\workflowsBackendesmart360\.env.local`
+2. Copia el contenido de `c:\workflowsBackendesmart360\.env.example`.
+3. Reemplaza los valores `replace_me` con tus claves reales.
+4. No subas ese archivo al repositorio (ya esta bloqueado en `.gitignore`).
+
+## Fase 0 - Preparacion y seguridad (hoy)
+
+Que haremos:
+- Definir variables y llaves por entorno.
+- Congelar inventario de endpoints actuales (Dr y Dra).
+- Confirmar webhooks de Cal.com y eventos activos.
+
+Resultado:
+- Base segura para iniciar pruebas sin exponer credenciales.
+
+## Fase 1 - Nucleo de datos (Postgres)
+
+Que haremos:
+- Crear tablas de `contacts`, `patients`, `appointments`, `appointment_events`, `bot_sessions`.
+- Definir estados de cita: `pending`, `confirmed`, `rescheduled`, `cancelled`, `no_show`.
+- Guardar `source` de entrada: `whatsapp`, `voice_dialora`, `calcom_web`.
+
+Resultado:
+- Fuente de verdad unica (ya no Google Sheets como base principal).
+
+## Fase 2 - Backend API base
+
+Que haremos:
+- Crear endpoint principal de conversacion: `POST /chat/step`.
+- Crear endpoints de agenda: consultar, agendar, cancelar, reagendar.
+- Estandarizar respuestas con `message` humano + `code` tecnico.
+
+Resultado:
+- BotSailor puede seguir usando HTTP API, pero la logica vive en backend.
+
+## Fase 3 - Integracion Cal.com
+
+Que haremos:
+- Recibir eventos webhook de Dr y Dra.
+- Aplicar idempotencia por `bookingUid` + tipo de evento.
+- Sincronizar la cita en BD y disparar acciones de negocio.
+
+Resultado:
+- Las citas creadas por web de Cal.com quedan unificadas en el mismo sistema.
+
+## Fase 4 - Integracion BotSailor (sin romper operacion)
+
+Que haremos:
+- Mantener BotSailor como capa de canal WhatsApp.
+- Reducir workflows duros y pasar decisiones al backend.
+- Mostrar respuestas conversacionales usando variable `message`.
+
+Resultado:
+- Menos dependencia de botones/listas dinamicas y mas conversacion natural.
+
+## Fase 5 - IA para ambiguedad y validacion
+
+Que haremos:
+- Interpretar lenguaje natural (ej. "el proximo viernes por la tarde").
+- Detectar fuera de contexto y redirigir con mensajes claros.
+- Validar que la eleccion del usuario exista en slots reales.
+
+Resultado:
+- Conversaciones mas robustas, con menos errores por entradas ambiguas.
+
+## Fase 6 - Dashboard operativo
+
+Que haremos:
+- Crear panel para doctor/recepcion:
+  - Citas hoy
+  - Reagendadas/canceladas/no-show
+  - Pacientes por numero
+  - Alertas de errores
+
+Resultado:
+- Visibilidad total de operacion y mejor servicio al cliente.
+
+## Fase 7 - Escalado multi-clinica
+
+Que haremos:
+- Plantilla replicable por tenant/doctor.
+- Variables por cliente sin duplicar logica.
+- Trazabilidad y monitoreo por cuenta.
+
+Resultado:
+- Solucion lista para crecer con mas clientes sin romper arquitectura.

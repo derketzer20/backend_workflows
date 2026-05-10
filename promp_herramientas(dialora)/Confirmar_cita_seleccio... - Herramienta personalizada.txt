@@ -1,0 +1,60 @@
+{
+  "name": "Confirmar_cita_seleccionada",
+  "description": "Ejecuta esta herramienta OBLIGATORIAMENTE para agendar la cita SOLO cuando el paciente ya haya elegido un horario definitivo, un especialista y un motivo de consulta.",
+  "pre_call_message": "Estoy confirmando su cita en el sistema.",
+  "parameters": {
+    "required": [
+      "nombre",
+      "fecha_nac",
+      "numero",
+      "timezone",
+      "especialista",
+      "motivo_consulta",
+      "horario_seleccionado"
+    ],
+    "properties": {
+      "nombre": {
+        "type": "string",
+        "description": "Instrucción estricta: Escribe el nombre completo que el paciente dictó."
+      },
+      "numero": {
+        "type": "string",
+        "description": "Instrucción estricta: Inyecta el número de teléfono del paciente automáticamente desde el sistema {phone}."
+      },
+      "timezone": {
+        "type": "string",
+        "description": "Instrucción estricta: Envía siempre el valor estático: 'America/Mexico_City'."
+      },
+      "fecha_nac": {
+        "type": "string",
+        "description": "Instrucción estricta: Escribe la fecha de nacimiento que el paciente dictó."
+      },
+      "especialista": {
+        "type": "string",
+        "description": "Instrucción estricta: Escribe el nombre del especialista seleccionado."
+      },
+      "motivo_consulta": {
+        "type": "string",
+        "description": "Instrucción estricta: Escribe el motivo o malestar {motivo_consulta}."
+      },
+      "horario_seleccionado": {
+        "type": "string",
+        "description": "carga el horario que eligió el paciente y copiar EXACTAMENTE el valor de la propiedad 'formato_fecha' que recibiste en el JSON de disponibilidad. Ejemplo a enviar: '2026-04-17T16:30:00.000-06:00'."
+      }
+    }
+  },
+  "value": {
+    "method": "POST",
+    "param": {
+      "nombre": "%(nombre)s",
+      "numero": "%(numero)s",
+      "timezone": "%(timezone)s",
+      "fecha_nac": "%(fecha_nac)s",
+      "especialista": "%(especialista)s",
+      "motivo_consulta": "%(motivo_consulta)s",
+      "horario_seleccionado": "%(horario_seleccionado)s"
+    },
+    "url": "https://hook.us2.make.com/k22zj45hcwb427sr2lxfvouvhs9bmfif",
+    "api_token": null
+  }
+}
