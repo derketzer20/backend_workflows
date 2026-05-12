@@ -55,6 +55,12 @@ Ejemplo:
 }
 ```
 
-## SQL inicial
+## SQL
 
-Ver `sql/001_init_schema.sql`.
+- Base: `sql/001_init_schema.sql`
+- Omnichannel hardening: `sql/002_omnichannel_model.sql`
+
+## Documentacion de implementacion
+
+- Modelo ER y reglas de integridad: `OMNICHANNEL_DB_MODEL.md`
+- Guía Make/BotSailor null-safe: `MAKE_BOTSAILOR_HARDENING.md`
