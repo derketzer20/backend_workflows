@@ -27,6 +27,11 @@ Que haremos:
 - Definir estados de cita: `pending`, `confirmed`, `rescheduled`, `cancelled`, `no_show`.
 - Guardar `source` de entrada: `whatsapp`, `voice_dialora`, `calcom_web`.
 
+Orden de migracion (ejecutar en la misma base, una sola vez por entorno):
+1. `backend/sql/001_init_schema.sql` — nucleo multi-tenant, **tablas de catalogo** (semilla incluida) y columnas `*_type_id` en `appointments` / `appointment_events` enlazadas a esos catalogos.
+2. `backend/sql/002_omnichannel_model.sql` — sedes, vinculos contacto-paciente, catálogos por ID, politicas de duplicados por ventana, normalizacion de telefono, vistas (`v_active_appointments`, `v_contact_active_appointments`), funciones (`fn_get_active_appointments_for_contact`, cancelar/reagendar por `booking_uid`, deteccion de duplicados) y trigger de enforcement.
+3. `backend/sql/003_booking_validation_api.sql` — vista y funciones de solo lectura para validar paciente/contacto, doctor de la cita y pre-chequeo de duplicados antes de llamar a Cal.com.
+
 Resultado:
 - Fuente de verdad unica (ya no Google Sheets como base principal).
 

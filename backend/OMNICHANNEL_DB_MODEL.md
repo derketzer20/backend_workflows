@@ -6,6 +6,7 @@ Este documento define el modelo objetivo para agendamiento por WhatsApp, voz (Di
 
 - Base: `backend/sql/001_init_schema.sql`
 - Endurecimiento omnicanal: `backend/sql/002_omnichannel_model.sql`
+- API de validación lectura (opcional): `backend/sql/003_booking_validation_api.sql`
 
 ## Entidades principales
 
