@@ -35,6 +35,7 @@ Orden de migracion (ejecutar en la misma base, una sola vez por entorno):
 5. `backend/sql/005_regularize_patient_appointment_cache.sql` — (opcional) asegura columnas y cache en entornos parciales; idempotente.
 6. `backend/sql/006_normalize_appointment_intervals.sql` — (opcional) corrige `ends_at` faltantes o invalidos antes de confiar en `active_appointment_count`.
 7. `backend/sql/007_fix_has_active_proxima_cita.sql` — **solo si la base ya tenia 004 antigua** con `has_active_appointment` **generada** como `(active_appointment_count > 0)`; aplica semantica nueva (has = proxima cita) + backfill.
+8. `backend/sql/008_specialist_codes_fk.sql` — catálogo `specialist_codes` y FK `specialists.specialist_code_id` (trigger mantiene `specialist_code` texto alineado).
 
 Resultado:
 - Fuente de verdad unica (ya no Google Sheets como base principal).
