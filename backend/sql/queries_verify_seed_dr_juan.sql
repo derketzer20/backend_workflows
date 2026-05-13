@@ -4,8 +4,8 @@
 --   9e4860a5-d163-548d-8cb2-886f4d9e71f2
 --
 -- En Supabase SQL Editor: ejecuta UNA consulta a la vez.
--- Prefijo CACHE__: columnas persistidas en patients (trigger fn_recompute).
--- regla_* / esta_cita_cuenta_para_*: mismas condiciones que fn_recompute (004/005).
+-- Prefijo CACHE__: columnas persistidas en patients (fn_recompute).
+-- has_active = hay próxima cita (next_appointment_starts_at no nulo); active_count = slots vigentes por ends_at.
 -- Normalizar ends_at: 006_normalize_appointment_intervals.sql
 -- =============================================================================
 
@@ -119,14 +119,15 @@ select
           or (x.ends_at is null and x.starts_at is not null and x.starts_at > now())
         )
     )
-  ) as verificacion_CACHE_coincide_con_reconteo
+  ) as verificacion_active_count_coincide_reconteo_slots,
+  (p.has_active_appointment = (p.next_appointment_starts_at is not null)) as verificacion_has_active_igual_proxima_cita
 from patients p
 join contacts c on c.id = p.contact_id and c.tenant_id = p.tenant_id
 where p.tenant_id = '9e4860a5-d163-548d-8cb2-886f4d9e71f2'::uuid
   and p.deleted_at is null
 order by c.phone_digits;
 
--- 0.7) Auditoría de intervalos + columnas que usa fn_recompute para “cita activa” en cache
+-- 0.7) Auditoría: columnas por cita para active_appointment_count (slot vigente) y contexto
 select
   now() as calc_referencia_now_utc,
   a.id as appointment_id,
@@ -160,7 +161,13 @@ select
       (a.ends_at is not null and a.ends_at > now())
       or (a.ends_at is null and a.starts_at is not null and a.starts_at > now())
     )
-  ) as esta_cita_cuenta_para_CACHE__active_appointment_count
+  ) as esta_cita_cuenta_para_CACHE__active_appointment_count,
+  (
+    a.deleted_at is null
+    and a.status in ('pending', 'confirmed', 'rescheduled')
+    and a.starts_at is not null
+    and a.starts_at > now()
+  ) as esta_cita_es_proxima_para_has_active
 from appointments a
 left join patients p on p.id = a.patient_id
 where a.tenant_id = '9e4860a5-d163-548d-8cb2-886f4d9e71f2'::uuid
@@ -240,7 +247,8 @@ select
           or (x.ends_at is null and x.starts_at is not null and x.starts_at > s.tnow)
         )
     )
-  ) as verificacion_CACHE_coincide_con_reconteo,
+  ) as verificacion_active_count_coincide_reconteo_slots,
+  (p.has_active_appointment = (p.next_appointment_starts_at is not null)) as verificacion_has_active_igual_proxima_cita,
   p.metadata as metadata_paciente_json,
   coalesce(
     (
@@ -254,7 +262,7 @@ select
             || ' | '
             || a2.status
             || coalesce(' | uid:' || a2.booking_uid, '')
-            || ' | activa_cache:'
+            || ' | slot_vigente_active_count:'
             || (
               case
                 when a2.deleted_at is null
@@ -263,6 +271,17 @@ select
                     (a2.ends_at is not null and a2.ends_at > s.tnow)
                     or (a2.ends_at is null and a2.starts_at is not null and a2.starts_at > s.tnow)
                   )
+                then 'si'
+                else 'no'
+              end
+            )
+            || ' | proxima_has_active:'
+            || (
+              case
+                when a2.deleted_at is null
+                  and a2.status in ('pending', 'confirmed', 'rescheduled')
+                  and a2.starts_at is not null
+                  and a2.starts_at > s.tnow
                 then 'si'
                 else 'no'
               end
@@ -293,7 +312,7 @@ group by
 order by c.phone_digits;
 
 -- -----------------------------------------------------------------------------
--- B) CADA CITA COMO FILA + reglas que usa el cache (misma lógica que fn_recompute)
+-- B) CADA CITA: reglas para active_appointment_count (slot) y para has_active (próximo inicio)
 -- -----------------------------------------------------------------------------
 select
   now() as calc_referencia_now_utc,
@@ -320,6 +339,12 @@ select
       or (a.ends_at is null and a.starts_at is not null and a.starts_at > now())
     )
   ) as esta_cita_cuenta_para_CACHE__active_appointment_count,
+  (
+    a.deleted_at is null
+    and a.status in ('pending', 'confirmed', 'rescheduled')
+    and a.starts_at is not null
+    and a.starts_at > now()
+  ) as esta_cita_es_proxima_para_has_active,
   a.source as canal,
   a.reason as motivo,
   a.metadata as metadata_cita_json

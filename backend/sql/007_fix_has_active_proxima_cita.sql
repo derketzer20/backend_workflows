@@ -1,35 +1,36 @@
 -- =============================================================================
--- 005 — Regularización del cache de citas en patients (idempotente)
+-- 007 — Fix: has_active_appointment = hay próxima cita futura (consolidado)
 -- =============================================================================
--- Objetivo:
---   1) Asegurar columnas en `patients` y columnas mínimas en `appointments`
---      usadas por el cache (compatible con bases que aplicaron 001/002 sin 004).
---   2) Instalar o actualizar `fn_recompute_patient_appointment_cache`:
---      has_active_appointment = hay próxima cita (starts futuro en pending|confirmed|rescheduled);
---      active_appointment_count = citas con intervalo aún vigente (ends_at > now o equivalente).
---   3) Trigger en `appointments` + backfill de todos los pacientes no borrados.
---   4) Vista `v_patients_with_contact_role` alineada con el cache.
+-- Problema corregido:
+--   En versiones anteriores `has_active_appointment` era columna GENERADA como
+--   (active_appointment_count > 0), es decir “hay slot de cita aún vigente por
+--   ends_at”. El modelo de negocio requiere: “titular o asociado tienen cita
+--   activa” = existe una PRÓXIMA cita con inicio > ahora en estados operativos,
+--   alineado a `next_appointment_starts_at`.
 --
--- Uso: ejecutar una vez (o las veces que haga falta) en Supabase / psql después
---      de 001–003; si ya corriste 004, este script solo actualiza función,
---      trigger, vista y recalcula filas.
+-- Este script (idempotente en bases ya corregidas):
+--   1) Quita la vista que depende de la columna.
+--   2) Si `has_active_appointment` es generada, la elimina y crea columna boolean
+--      persistida con default false.
+--   3) Reemplaza `fn_recompute_patient_appointment_cache` para asignar
+--      `has_active_appointment = (v_next is not null)` junto con last/next/active_count.
+--   4) Recrea el trigger en `appointments` (sin cambio de lógica).
+--   5) Recrea `v_patients_with_contact_role`.
+--   6) Backfill: recalcula cache de todos los pacientes no borrados.
+--
+-- Cuándo ejecutarlo:
+--   - Una vez en Supabase / producción si aplicaste 004 antes de esta semántica.
+--   - Tras 001 + 002 + (004 o 005); no sustituye 006 si necesitas normalizar ends_at.
+--
+-- Archivos fuente alineados en el repo (misma lógica):
+--   backend/sql/004_patient_appointment_cache.sql
+--   backend/sql/005_regularize_patient_appointment_cache.sql
+--   backend/sql/DOC_cache_agenda_patients.md
+--   backend/sql/queries_verify_seed_dr_juan.sql
 -- =============================================================================
 
--- ---------- Defensa: columnas en appointments (002 / 001) ----------
-alter table appointments
-  add column if not exists deleted_at timestamptz,
-  add column if not exists ends_at timestamptz;
-
--- ---------- Defensa: columnas en patients ----------
-alter table patients
-  add column if not exists deleted_at timestamptz,
-  add column if not exists updated_at timestamptz not null default now(),
-  add column if not exists last_appointment_starts_at timestamptz,
-  add column if not exists next_appointment_starts_at timestamptz,
-  add column if not exists active_appointment_count integer not null default 0;
-
--- has_active_appointment: persistida; migrar si existía como columna generada (004 antigua)
 drop view if exists v_patients_with_contact_role;
+
 do $$
 begin
   if exists (
@@ -44,19 +45,13 @@ begin
   end if;
 end;
 $$;
+
 alter table patients
   add column if not exists has_active_appointment boolean not null default false;
 
-comment on column patients.last_appointment_starts_at is
-  'Mayor starts_at <= now() entre citas no borradas (cualquier status).';
-comment on column patients.next_appointment_starts_at is
-  'Menor starts_at > now() entre citas con status pending|confirmed|rescheduled.';
-comment on column patients.active_appointment_count is
-  'Citas operativamente vigentes: status pending|confirmed|rescheduled, no borradas, y aún no terminadas (ends_at > now()) o sin ends_at pero starts_at > now().';
 comment on column patients.has_active_appointment is
   'True si existe próxima cita (next_appointment_starts_at no nulo al recomputar).';
 
--- ---------- Función de recálculo (misma lógica que 004 actualizado) ----------
 create or replace function fn_recompute_patient_appointment_cache(p_patient_id uuid)
 returns void
 language plpgsql
@@ -147,7 +142,6 @@ after insert or delete or update of patient_id, starts_at, ends_at, status, dele
 on appointments
 for each row execute function tg_appointments_refresh_patient_cache();
 
--- ---------- Vista (misma definición que 004) ----------
 create or replace view v_patients_with_contact_role as
 select
   p.id as patient_id,
@@ -181,7 +175,6 @@ where p.deleted_at is null;
 comment on view v_patients_with_contact_role is
   'Paciente con teléfono del contacto canónico y rol (titular/familiar/…) desde contact_patient_links; más cache de citas.';
 
--- ---------- Regularización de datos: recalcular cache por paciente ----------
 do $$
 declare
   r record;
@@ -192,6 +185,6 @@ begin
     perform fn_recompute_patient_appointment_cache(r.id);
     n := n + 1;
   end loop;
-  raise notice '005_regularize: cache recalculado para % pacientes', n;
+  raise notice '007_fix_has_active: cache recalculado para % pacientes', n;
 end;
 $$;

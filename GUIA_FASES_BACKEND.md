@@ -31,7 +31,10 @@ Orden de migracion (ejecutar en la misma base, una sola vez por entorno):
 1. `backend/sql/001_init_schema.sql` — nucleo multi-tenant, **tablas de catalogo** (semilla incluida) y columnas `*_type_id` en `appointments` / `appointment_events` enlazadas a esos catalogos.
 2. `backend/sql/002_omnichannel_model.sql` — sedes, vinculos contacto-paciente, catálogos por ID, politicas de duplicados por ventana, normalizacion de telefono, vistas (`v_active_appointments`, `v_contact_active_appointments`), funciones (`fn_get_active_appointments_for_contact`, cancelar/reagendar por `booking_uid`, deteccion de duplicados) y trigger de enforcement.
 3. `backend/sql/003_booking_validation_api.sql` — vista y funciones de solo lectura para validar paciente/contacto, doctor de la cita y pre-chequeo de duplicados antes de llamar a Cal.com.
-4. `backend/sql/004_patient_appointment_cache.sql` — columnas en `patients` (ultima cita, siguiente cita, conteo citas activas, flag derivado), trigger que recalcula desde `appointments`, vista `v_patients_with_contact_role` (titular/familiar con telefono).
+4. `backend/sql/004_patient_appointment_cache.sql` — columnas en `patients` (ultima cita, siguiente cita, conteo citas activas, flag `has_active` alineado a proxima cita), trigger que recalcula desde `appointments`, vista `v_patients_with_contact_role` (titular/familiar con telefono). Documentacion: `backend/sql/DOC_cache_agenda_patients.md`.
+5. `backend/sql/005_regularize_patient_appointment_cache.sql` — (opcional) asegura columnas y cache en entornos parciales; idempotente.
+6. `backend/sql/006_normalize_appointment_intervals.sql` — (opcional) corrige `ends_at` faltantes o invalidos antes de confiar en `active_appointment_count`.
+7. `backend/sql/007_fix_has_active_proxima_cita.sql` — **solo si la base ya tenia 004 antigua** con `has_active_appointment` **generada** como `(active_appointment_count > 0)`; aplica semantica nueva (has = proxima cita) + backfill.
 
 Resultado:
 - Fuente de verdad unica (ya no Google Sheets como base principal).

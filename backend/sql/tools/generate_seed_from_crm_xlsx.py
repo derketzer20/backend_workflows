@@ -273,8 +273,8 @@ def main():
             patient_meta["crm_numero_citas_nota"] = (
                 "Contador CRM/Sheets; no implica N filas en appointments. "
                 "Historial detallado solo si el export trae fechas por cita. "
-                "Cache 004: cita activa = pending|confirmed|rescheduled y slot no terminado "
-                "(ends_at > ahora; si falta ends usar script 006 o ends = starts + 30 min)."
+                "Cache: has_active = proxima cita (starts futuro); active_count = slot vigente (ends_at); "
+                "006 si falta ends; 007 si la BD tenia has_active generada por active_count."
             )
 
         contacts_out.append(
@@ -344,7 +344,7 @@ def main():
             "Citas en tabla appointments: solo cuando fecha_cita es parseable (no se inventan fechas por visitas pasadas).",
             "numero_citas del CRM → patients.metadata.crm_numero_citas (máximo por teléfono); no crea citas pasadas sin fecha.",
             "rol_paciente (titular/familiar/…): se refleja en contact_patient_links + metadata.crm_rol_paciente.",
-            "Cache 004: pending|confirmed|rescheduled y ends_at > ahora (o sin ends_at y starts_at futuro); normalizar ends con backend/sql/006_normalize_appointment_intervals.sql.",
+            "has_active_appointment = proxima cita futura; active_appointment_count = intervalo vigente; 007_fix_has_active_proxima_cita.sql si la BD tenia la columna generada antigua.",
             "Con migración 004: patients.last/next/active_appointment_count + vista v_patients_with_contact_role.",
             "Correo help@e-smart360.com omitido como email de paciente.",
             "starts_at/ends_at interpretados en America/Monterrey.",

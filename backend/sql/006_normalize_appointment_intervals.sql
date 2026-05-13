@@ -5,7 +5,8 @@
 -- definido cuando falta o es inconsistente. Duración por defecto: 30 minutos
 -- (misma convención que el seed CRM / generate_seed_from_crm_xlsx.py).
 --
--- Tras el UPDATE, el trigger en appointments recalcula el cache en patients.
+-- Tras el UPDATE, el trigger en appointments recalcula el cache en patients
+-- (incluye has_active = hay próxima cita y active_count por intervalo).
 --
 -- Uso:
 --   1) Ejecuta en queries_verify la auditoría 0.7 / 0.8 (ver starts_at, ends_at).
