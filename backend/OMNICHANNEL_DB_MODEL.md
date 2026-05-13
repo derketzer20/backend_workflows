@@ -7,6 +7,7 @@ Este documento define el modelo objetivo para agendamiento por WhatsApp, voz (Di
 - Base: `backend/sql/001_init_schema.sql`
 - Endurecimiento omnicanal: `backend/sql/002_omnichannel_model.sql`
 - API de validación lectura (opcional): `backend/sql/003_booking_validation_api.sql`
+- Cache agenda por paciente + rol en lectura: `backend/sql/004_patient_appointment_cache.sql`
 
 ## Entidades principales
 
@@ -14,9 +15,10 @@ Este documento define el modelo objetivo para agendamiento por WhatsApp, voz (Di
 - `locations`: sede física/lógica por tenant con zona horaria.
 - `specialists`: doctores vinculados al tenant (y opcionalmente a sede).
 - `contacts`: identidad de canal (`wa_id`, normalización de teléfono).
-- `patients`: persona que recibe la atención.
-- `contact_patient_links`: relación titular-familia y permisos.
+- `patients`: persona que recibe la atención; incluye cache de agenda (`last_appointment_starts_at`, `next_appointment_starts_at`, `active_appointment_count`, `has_active_appointment`) mantenido por trigger desde `appointments` (migración `004`).
+- `contact_patient_links`: relación titular-familia y permisos (canónico para rol titular / familiar / dependiente).
 - `appointments`: ciclo de vida de citas por canal.
+- `v_patients_with_contact_role` (`004`): paciente + teléfono del contacto canónico + rol (titular/familiar/…) y cache de última/siguiente/activas.
 - `appointment_events`: bitácora inmutable de eventos.
 - `channel_messages`: trazabilidad opcional de mensajes/interacciones.
 - `specialist_duplicate_policies`: políticas por doctor para bloquear duplicados por ventana de tiempo.
@@ -111,6 +113,13 @@ La migración `002` incluye:
 - `fn_find_duplicate_active_appointment(...)`
 - `fn_find_window_conflict_appointment(...)`
 - Trigger de enforcement: `trg_appointments_enforce_duplicate_policy`
+
+La migración `004` añade (cache derivada de `appointments`, recalculada por trigger):
+
+- Columnas en `patients`: `last_appointment_starts_at`, `next_appointment_starts_at`, `active_appointment_count`, `has_active_appointment` (generada)
+- `fn_recompute_patient_appointment_cache(patient_id)`
+- Trigger `trg_appointments_refresh_patient_cache` en `appointments`
+- Vista `v_patients_with_contact_role` (paciente + teléfono del contacto canónico + rol titular/familiar desde `contact_patient_links`)
 
 Estas interfaces están diseñadas para ser consumidas por nodos PostgreSQL de Make y mantener la lógica uniforme entre canales.
 

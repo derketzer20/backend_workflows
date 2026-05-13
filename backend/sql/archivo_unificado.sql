@@ -193,6 +193,10 @@ CREATE TABLE public.patients (
   metadata jsonb NOT NULL DEFAULT '{}'::jsonb,
   deleted_at timestamp with time zone,
   updated_at timestamp with time zone NOT NULL DEFAULT now(),
+  last_appointment_starts_at timestamp with time zone,
+  next_appointment_starts_at timestamp with time zone,
+  active_appointment_count integer NOT NULL DEFAULT 0,
+  has_active_appointment boolean GENERATED ALWAYS AS (active_appointment_count > 0) STORED,
   CONSTRAINT patients_pkey PRIMARY KEY (id),
   CONSTRAINT patients_tenant_id_fkey FOREIGN KEY (tenant_id) REFERENCES public.tenants(id),
   CONSTRAINT patients_contact_id_fkey FOREIGN KEY (contact_id) REFERENCES public.contacts(id)

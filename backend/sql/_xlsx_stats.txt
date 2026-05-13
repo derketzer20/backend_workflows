@@ -1,3 +1,0 @@
-﻿origen [('None', 17)]
-fase [('None', 6), ('Retencion', 5), ('RETENCION', 4), ('Cita_Confirmada', 2)]
-rows_with_data 17 booking_empty_or_missing 15

@@ -1,0 +1,532 @@
+{
+  "fuente": "c:\\Users\\Yareli\\Downloads\\Dr.JuanCarlos (1).xlsx",
+  "hoja": "Base_CRM",
+  "filas_crm_con_datos": 17,
+  "notas_normalizacion": [
+    "Teléfonos a 10 dígitos; wa_id WhatsApp MX típico 521 + dígitos.",
+    "9 dígitos (613294675) → prefijo 8 → 8613294675 (revisa si era otro dígito/lada).",
+    "Citas en tabla appointments: solo cuando fecha_cita es parseable (no se inventan fechas por visitas pasadas).",
+    "numero_citas del CRM → patients.metadata.crm_numero_citas (máximo por teléfono); no crea citas pasadas sin fecha.",
+    "rol_paciente (titular/familiar/…): se refleja en contact_patient_links + metadata.crm_rol_paciente.",
+    "Cita activa en BD = appointments con status pending|confirmed|rescheduled; no equivale solo a crm_numero_citas.",
+    "Con migración 004: patients.last/next/active_appointment_count + vista v_patients_with_contact_role.",
+    "Correo help@e-smart360.com omitido como email de paciente.",
+    "starts_at/ends_at interpretados en America/Monterrey."
+  ],
+  "tenants": [
+    {
+      "id": "9e4860a5-d163-548d-8cb2-886f4d9e71f2",
+      "name": "CorpOS Monterrey"
+    }
+  ],
+  "locations": [
+    {
+      "id": "e9bed3f5-d826-5e65-9d30-d4a9220d5a44",
+      "code": "MTY-01",
+      "display_name": "Monterrey — Consultorio principal",
+      "timezone": "America/Monterrey"
+    }
+  ],
+  "specialists": [
+    {
+      "id": "14d460e2-fd36-5d6a-8a57-629b091bdad7",
+      "specialist_key": "dr",
+      "specialist_code": "dr_juan_carlos",
+      "display_name": "Dr. Juan Carlos"
+    }
+  ],
+  "contacts": [
+    {
+      "id": "f626c5ed-2ebc-54e2-a4c7-5dc90179f499",
+      "phone_digits": "8120971098",
+      "phone_e164": "+528120971098",
+      "wa_id": "5218120971098",
+      "metadata": {
+        "import": "Dr.JuanCarlos Base_CRM"
+      }
+    },
+    {
+      "id": "9d4f6ab6-925f-5b68-bb1e-644f16050d5f",
+      "phone_digits": "8666428714",
+      "phone_e164": "+528666428714",
+      "wa_id": "5218666428714",
+      "metadata": {
+        "import": "Dr.JuanCarlos Base_CRM"
+      }
+    },
+    {
+      "id": "88ff81d9-2fd1-5636-b8eb-afa4a279bc77",
+      "phone_digits": "4434332458",
+      "phone_e164": "+524434332458",
+      "wa_id": "5214434332458",
+      "metadata": {
+        "import": "Dr.JuanCarlos Base_CRM"
+      }
+    },
+    {
+      "id": "fe35eaa8-61f9-577b-aa75-b843f44b34b3",
+      "phone_digits": "8110593229",
+      "phone_e164": "+528110593229",
+      "wa_id": "5218110593229",
+      "metadata": {
+        "import": "Dr.JuanCarlos Base_CRM"
+      }
+    },
+    {
+      "id": "ef4daeb4-6dd1-5757-a3c4-123e68a9dc58",
+      "phone_digits": "8117623398",
+      "phone_e164": "+528117623398",
+      "wa_id": "5218117623398",
+      "metadata": {
+        "import": "Dr.JuanCarlos Base_CRM"
+      }
+    },
+    {
+      "id": "e455f85b-5a52-5dca-9617-5e8874f7eb42",
+      "phone_digits": "8116653470",
+      "phone_e164": "+528116653470",
+      "wa_id": "5218116653470",
+      "metadata": {
+        "import": "Dr.JuanCarlos Base_CRM"
+      }
+    },
+    {
+      "id": "44c7bced-77c5-56d4-8c50-a89da145138e",
+      "phone_digits": "8921046601",
+      "phone_e164": "+528921046601",
+      "wa_id": "5218921046601",
+      "metadata": {
+        "import": "Dr.JuanCarlos Base_CRM"
+      }
+    },
+    {
+      "id": "dda33226-c10d-526f-ba9d-74bf0e1cab90",
+      "phone_digits": "8113470224",
+      "phone_e164": "+528113470224",
+      "wa_id": "5218113470224",
+      "metadata": {
+        "import": "Dr.JuanCarlos Base_CRM"
+      }
+    },
+    {
+      "id": "c1717961-5c71-59f5-907b-4c5e33aa7908",
+      "phone_digits": "5664119329",
+      "phone_e164": "+525664119329",
+      "wa_id": "5215664119329",
+      "metadata": {
+        "import": "Dr.JuanCarlos Base_CRM"
+      }
+    },
+    {
+      "id": "a9da1492-f147-5609-8a08-3c33aa5c3ab0",
+      "phone_digits": "8110039728",
+      "phone_e164": "+528110039728",
+      "wa_id": "5218110039728",
+      "metadata": {
+        "import": "Dr.JuanCarlos Base_CRM"
+      }
+    },
+    {
+      "id": "1a5a6edc-9e98-5e10-8ec3-f61672685447",
+      "phone_digits": "8110068282",
+      "phone_e164": "+528110068282",
+      "wa_id": "5218110068282",
+      "metadata": {
+        "import": "Dr.JuanCarlos Base_CRM"
+      }
+    },
+    {
+      "id": "612f8d88-af71-5c77-bdec-4d681dd2d1e2",
+      "phone_digits": "8613294675",
+      "phone_e164": "+528613294675",
+      "wa_id": "5218613294675",
+      "metadata": {
+        "import": "Dr.JuanCarlos Base_CRM"
+      }
+    },
+    {
+      "id": "9678c845-f30b-5445-9ab9-5fb713234eb3",
+      "phone_digits": "9618476255",
+      "phone_e164": "+529618476255",
+      "wa_id": "5219618476255",
+      "metadata": {
+        "import": "Dr.JuanCarlos Base_CRM"
+      }
+    },
+    {
+      "id": "44bd7760-9672-570f-83dd-e02b0355e43a",
+      "phone_digits": "8140056133",
+      "phone_e164": "+528140056133",
+      "wa_id": "5218140056133",
+      "metadata": {
+        "import": "Dr.JuanCarlos Base_CRM"
+      }
+    }
+  ],
+  "patients": [
+    {
+      "id": "44eaea81-a1b6-5832-93e0-0b56e31a0991",
+      "contact_id": "f626c5ed-2ebc-54e2-a4c7-5dc90179f499",
+      "full_name": "Priscila Abigail Zacarías Leal",
+      "birth_date": null,
+      "email": null,
+      "metadata": {
+        "import": "Dr.JuanCarlos Base_CRM",
+        "crm_rol_paciente": "titular",
+        "crm_numero_citas": 1,
+        "crm_numero_citas_nota": "Contador CRM/Sheets; no implica N filas en appointments. Historial detallado solo si el export trae fechas por cita. Cita activa en BD = status pending|confirmed|rescheduled."
+      },
+      "relationship_type": "titular",
+      "relationship_type_id": 1,
+      "relationship_type_code": "titular"
+    },
+    {
+      "id": "9dc700a0-e69e-5dd6-920b-8f90dd07a6c0",
+      "contact_id": "9d4f6ab6-925f-5b68-bb1e-644f16050d5f",
+      "full_name": "Luis",
+      "birth_date": null,
+      "email": null,
+      "metadata": {
+        "import": "Dr.JuanCarlos Base_CRM",
+        "crm_rol_paciente": "titular"
+      },
+      "relationship_type": "titular",
+      "relationship_type_id": 1,
+      "relationship_type_code": "titular"
+    },
+    {
+      "id": "996365eb-884c-5ca3-b0b3-26d16a6b692a",
+      "contact_id": "88ff81d9-2fd1-5636-b8eb-afa4a279bc77",
+      "full_name": "Natalia",
+      "birth_date": null,
+      "email": null,
+      "metadata": {
+        "import": "Dr.JuanCarlos Base_CRM",
+        "crm_rol_paciente": "titular",
+        "crm_numero_citas": 1,
+        "crm_numero_citas_nota": "Contador CRM/Sheets; no implica N filas en appointments. Historial detallado solo si el export trae fechas por cita. Cita activa en BD = status pending|confirmed|rescheduled."
+      },
+      "relationship_type": "titular",
+      "relationship_type_id": 1,
+      "relationship_type_code": "titular"
+    },
+    {
+      "id": "1b908ac6-029a-511b-9032-dca314b310c0",
+      "contact_id": "fe35eaa8-61f9-577b-aa75-b843f44b34b3",
+      "full_name": "Martha Yrenne",
+      "birth_date": null,
+      "email": null,
+      "metadata": {
+        "import": "Dr.JuanCarlos Base_CRM",
+        "crm_rol_paciente": "titular"
+      },
+      "relationship_type": "titular",
+      "relationship_type_id": 1,
+      "relationship_type_code": "titular"
+    },
+    {
+      "id": "e91a6b5d-0ff1-5124-b01b-cff1f8620ff6",
+      "contact_id": "ef4daeb4-6dd1-5757-a3c4-123e68a9dc58",
+      "full_name": "Ramona",
+      "birth_date": null,
+      "email": null,
+      "metadata": {
+        "import": "Dr.JuanCarlos Base_CRM",
+        "crm_rol_paciente": "titular"
+      },
+      "relationship_type": "titular",
+      "relationship_type_id": 1,
+      "relationship_type_code": "titular"
+    },
+    {
+      "id": "882f3b61-f9eb-5169-94ef-b5b5486ab1a6",
+      "contact_id": "e455f85b-5a52-5dca-9617-5e8874f7eb42",
+      "full_name": "Lidia",
+      "birth_date": null,
+      "email": null,
+      "metadata": {
+        "import": "Dr.JuanCarlos Base_CRM",
+        "crm_rol_paciente": "titular"
+      },
+      "relationship_type": "titular",
+      "relationship_type_id": 1,
+      "relationship_type_code": "titular"
+    },
+    {
+      "id": "870e78ce-bbd7-549f-a770-4d45ac35fe8a",
+      "contact_id": "44c7bced-77c5-56d4-8c50-a89da145138e",
+      "full_name": "Dariana Querine",
+      "birth_date": "2002-08-30",
+      "email": null,
+      "metadata": {
+        "import": "Dr.JuanCarlos Base_CRM",
+        "crm_rol_paciente": "titular"
+      },
+      "relationship_type": "titular",
+      "relationship_type_id": 1,
+      "relationship_type_code": "titular"
+    },
+    {
+      "id": "b3e9fa0b-4a79-55c7-806a-c51dcbae4184",
+      "contact_id": "dda33226-c10d-526f-ba9d-74bf0e1cab90",
+      "full_name": "Raul",
+      "birth_date": "1974-11-08",
+      "email": null,
+      "metadata": {
+        "import": "Dr.JuanCarlos Base_CRM",
+        "crm_rol_paciente": "titular"
+      },
+      "relationship_type": "titular",
+      "relationship_type_id": 1,
+      "relationship_type_code": "titular"
+    },
+    {
+      "id": "cd9243cb-6fde-5549-a74c-22d86d1a9ddb",
+      "contact_id": "c1717961-5c71-59f5-907b-4c5e33aa7908",
+      "full_name": "Emmanuel",
+      "birth_date": "1996-01-20",
+      "email": "slfamilia769@gmail.com",
+      "metadata": {
+        "import": "Dr.JuanCarlos Base_CRM",
+        "crm_rol_paciente": "titular"
+      },
+      "relationship_type": "titular",
+      "relationship_type_id": 1,
+      "relationship_type_code": "titular"
+    },
+    {
+      "id": "9bd3855c-14bd-54eb-a7ef-9b06b8b4ab27",
+      "contact_id": "a9da1492-f147-5609-8a08-3c33aa5c3ab0",
+      "full_name": "Hilda Elizabeth Gómez Rodríguez",
+      "birth_date": "1971-12-20",
+      "email": null,
+      "metadata": {
+        "import": "Dr.JuanCarlos Base_CRM",
+        "crm_rol_paciente": "titular"
+      },
+      "relationship_type": "titular",
+      "relationship_type_id": 1,
+      "relationship_type_code": "titular"
+    },
+    {
+      "id": "74ae82ae-2ba2-5a78-b65c-a281239d458b",
+      "contact_id": "1a5a6edc-9e98-5e10-8ec3-f61672685447",
+      "full_name": "Madeleine",
+      "birth_date": "1985-05-14",
+      "email": "sonrisaPerfecta@gmail.com",
+      "metadata": {
+        "import": "Dr.JuanCarlos Base_CRM",
+        "crm_rol_paciente": "titular",
+        "crm_numero_citas": 1,
+        "crm_numero_citas_nota": "Contador CRM/Sheets; no implica N filas en appointments. Historial detallado solo si el export trae fechas por cita. Cita activa en BD = status pending|confirmed|rescheduled."
+      },
+      "relationship_type": "titular",
+      "relationship_type_id": 1,
+      "relationship_type_code": "titular"
+    },
+    {
+      "id": "39e5fd18-eaa3-57a5-b861-1a4efc93ecef",
+      "contact_id": "612f8d88-af71-5c77-bdec-4d681dd2d1e2",
+      "full_name": "Miriam Yojana",
+      "birth_date": "1975-03-25",
+      "email": null,
+      "metadata": {
+        "import": "Dr.JuanCarlos Base_CRM",
+        "crm_rol_paciente": "titular"
+      },
+      "relationship_type": "titular",
+      "relationship_type_id": 1,
+      "relationship_type_code": "titular"
+    },
+    {
+      "id": "eafbbb6c-88b6-5255-85d8-f15c34d90c2c",
+      "contact_id": "9678c845-f30b-5445-9ab9-5fb713234eb3",
+      "full_name": "Miriam",
+      "birth_date": "1975-03-25",
+      "email": "miriamyojanavazquezrauda@gmail.com",
+      "metadata": {
+        "import": "Dr.JuanCarlos Base_CRM",
+        "crm_rol_paciente": "titular",
+        "crm_numero_citas": 1,
+        "crm_numero_citas_nota": "Contador CRM/Sheets; no implica N filas en appointments. Historial detallado solo si el export trae fechas por cita. Cita activa en BD = status pending|confirmed|rescheduled."
+      },
+      "relationship_type": "titular",
+      "relationship_type_id": 1,
+      "relationship_type_code": "titular"
+    },
+    {
+      "id": "cdb5fcf4-49e6-54ae-90ce-aee9c87b21d9",
+      "contact_id": "44bd7760-9672-570f-83dd-e02b0355e43a",
+      "full_name": "Eugenio",
+      "birth_date": "1999-05-29",
+      "email": "sonrisaPerfecta@gmail.com",
+      "metadata": {
+        "import": "Dr.JuanCarlos Base_CRM",
+        "crm_rol_paciente": "titular",
+        "crm_numero_citas": 1,
+        "crm_numero_citas_nota": "Contador CRM/Sheets; no implica N filas en appointments. Historial detallado solo si el export trae fechas por cita. Cita activa en BD = status pending|confirmed|rescheduled."
+      },
+      "relationship_type": "titular",
+      "relationship_type_id": 1,
+      "relationship_type_code": "titular"
+    }
+  ],
+  "contact_patient_links": [
+    {
+      "contact_id": "f626c5ed-2ebc-54e2-a4c7-5dc90179f499",
+      "patient_id": "44eaea81-a1b6-5832-93e0-0b56e31a0991",
+      "relationship_type": "titular",
+      "relationship_type_id": 1
+    },
+    {
+      "contact_id": "9d4f6ab6-925f-5b68-bb1e-644f16050d5f",
+      "patient_id": "9dc700a0-e69e-5dd6-920b-8f90dd07a6c0",
+      "relationship_type": "titular",
+      "relationship_type_id": 1
+    },
+    {
+      "contact_id": "88ff81d9-2fd1-5636-b8eb-afa4a279bc77",
+      "patient_id": "996365eb-884c-5ca3-b0b3-26d16a6b692a",
+      "relationship_type": "titular",
+      "relationship_type_id": 1
+    },
+    {
+      "contact_id": "fe35eaa8-61f9-577b-aa75-b843f44b34b3",
+      "patient_id": "1b908ac6-029a-511b-9032-dca314b310c0",
+      "relationship_type": "titular",
+      "relationship_type_id": 1
+    },
+    {
+      "contact_id": "ef4daeb4-6dd1-5757-a3c4-123e68a9dc58",
+      "patient_id": "e91a6b5d-0ff1-5124-b01b-cff1f8620ff6",
+      "relationship_type": "titular",
+      "relationship_type_id": 1
+    },
+    {
+      "contact_id": "e455f85b-5a52-5dca-9617-5e8874f7eb42",
+      "patient_id": "882f3b61-f9eb-5169-94ef-b5b5486ab1a6",
+      "relationship_type": "titular",
+      "relationship_type_id": 1
+    },
+    {
+      "contact_id": "44c7bced-77c5-56d4-8c50-a89da145138e",
+      "patient_id": "870e78ce-bbd7-549f-a770-4d45ac35fe8a",
+      "relationship_type": "titular",
+      "relationship_type_id": 1
+    },
+    {
+      "contact_id": "dda33226-c10d-526f-ba9d-74bf0e1cab90",
+      "patient_id": "b3e9fa0b-4a79-55c7-806a-c51dcbae4184",
+      "relationship_type": "titular",
+      "relationship_type_id": 1
+    },
+    {
+      "contact_id": "c1717961-5c71-59f5-907b-4c5e33aa7908",
+      "patient_id": "cd9243cb-6fde-5549-a74c-22d86d1a9ddb",
+      "relationship_type": "titular",
+      "relationship_type_id": 1
+    },
+    {
+      "contact_id": "a9da1492-f147-5609-8a08-3c33aa5c3ab0",
+      "patient_id": "9bd3855c-14bd-54eb-a7ef-9b06b8b4ab27",
+      "relationship_type": "titular",
+      "relationship_type_id": 1
+    },
+    {
+      "contact_id": "1a5a6edc-9e98-5e10-8ec3-f61672685447",
+      "patient_id": "74ae82ae-2ba2-5a78-b65c-a281239d458b",
+      "relationship_type": "titular",
+      "relationship_type_id": 1
+    },
+    {
+      "contact_id": "612f8d88-af71-5c77-bdec-4d681dd2d1e2",
+      "patient_id": "39e5fd18-eaa3-57a5-b861-1a4efc93ecef",
+      "relationship_type": "titular",
+      "relationship_type_id": 1
+    },
+    {
+      "contact_id": "9678c845-f30b-5445-9ab9-5fb713234eb3",
+      "patient_id": "eafbbb6c-88b6-5255-85d8-f15c34d90c2c",
+      "relationship_type": "titular",
+      "relationship_type_id": 1
+    },
+    {
+      "contact_id": "44bd7760-9672-570f-83dd-e02b0355e43a",
+      "patient_id": "cdb5fcf4-49e6-54ae-90ce-aee9c87b21d9",
+      "relationship_type": "titular",
+      "relationship_type_id": 1
+    }
+  ],
+  "appointments": [
+    {
+      "id": "2adf1bf0-42bb-57e9-9e16-c8378b35e3d6",
+      "patient_id": "44eaea81-a1b6-5832-93e0-0b56e31a0991",
+      "starts_local": "2026-04-22 12:30:00",
+      "ends_local": "2026-04-22 13:00:00",
+      "booking_uid": null,
+      "status": "confirmed",
+      "status_type_id": 2,
+      "reason": null
+    },
+    {
+      "id": "6283d4be-8a69-57a3-b8a4-b7d61a46cbb3",
+      "patient_id": "9dc700a0-e69e-5dd6-920b-8f90dd07a6c0",
+      "starts_local": "2026-04-24 14:30:00",
+      "ends_local": "2026-04-24 15:00:00",
+      "booking_uid": "5RzATpgtERjpVHmcxhH2Tu",
+      "status": "confirmed",
+      "status_type_id": 2,
+      "reason": null
+    },
+    {
+      "id": "684499ba-0414-552b-9382-7e06ad1a6656",
+      "patient_id": "996365eb-884c-5ca3-b0b3-26d16a6b692a",
+      "starts_local": "2026-04-22 01:30:00",
+      "ends_local": "2026-04-22 02:00:00",
+      "booking_uid": null,
+      "status": "confirmed",
+      "status_type_id": 2,
+      "reason": null
+    },
+    {
+      "id": "e5f4a8ea-aa1c-5cad-90ed-a9bf12024955",
+      "patient_id": "882f3b61-f9eb-5169-94ef-b5b5486ab1a6",
+      "starts_local": "2026-04-25 10:00:00",
+      "ends_local": "2026-04-25 10:30:00",
+      "booking_uid": "xm7N8qPEU3nwWCwvSC76vc",
+      "status": "confirmed",
+      "status_type_id": 2,
+      "reason": null
+    },
+    {
+      "id": "74de2520-f2ad-54a1-b7c7-46557f46f84d",
+      "patient_id": "74ae82ae-2ba2-5a78-b65c-a281239d458b",
+      "starts_local": "2026-05-12 11:00:00",
+      "ends_local": "2026-05-12 11:30:00",
+      "booking_uid": null,
+      "status": "confirmed",
+      "status_type_id": 2,
+      "reason": null
+    },
+    {
+      "id": "0533436f-1eb2-5730-ab6e-a4c3f888906f",
+      "patient_id": "eafbbb6c-88b6-5255-85d8-f15c34d90c2c",
+      "starts_local": "2026-05-12 17:30:00",
+      "ends_local": "2026-05-12 18:00:00",
+      "booking_uid": null,
+      "status": "confirmed",
+      "status_type_id": 2,
+      "reason": null
+    },
+    {
+      "id": "9fc8a26d-b11f-55d2-907e-5013001f4ba1",
+      "patient_id": "cdb5fcf4-49e6-54ae-90ce-aee9c87b21d9",
+      "starts_local": "2026-05-12 18:30:00",
+      "ends_local": "2026-05-12 19:00:00",
+      "booking_uid": null,
+      "status": "confirmed",
+      "status_type_id": 2,
+      "reason": null
+    }
+  ]
+}
