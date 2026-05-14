@@ -98,6 +98,8 @@ returns void
 
 language plpgsql
 
+set search_path = public
+
 as $$
 
 declare
@@ -205,6 +207,8 @@ create or replace function tg_appointments_refresh_patient_cache()
 returns trigger
 
 language plpgsql
+
+set search_path = public
 
 as $$
 

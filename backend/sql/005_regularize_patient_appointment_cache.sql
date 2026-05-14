@@ -60,6 +60,7 @@ comment on column patients.has_active_appointment is
 create or replace function fn_recompute_patient_appointment_cache(p_patient_id uuid)
 returns void
 language plpgsql
+set search_path = public
 as $$
 declare
   v_last timestamptz;
@@ -113,6 +114,7 @@ $$;
 create or replace function tg_appointments_refresh_patient_cache()
 returns trigger
 language plpgsql
+set search_path = public
 as $$
 begin
   if tg_op = 'DELETE' then

@@ -70,6 +70,7 @@ create or replace function _009_add_fk_if_missing(
 )
 returns void
 language plpgsql
+set search_path = public
 as $$
 declare
   v_has_fk boolean;

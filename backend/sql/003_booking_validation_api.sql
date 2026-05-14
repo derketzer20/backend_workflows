@@ -35,6 +35,7 @@ create or replace function fn_resolve_contact_id_by_phone_digits(
 )
 returns uuid
 language sql
+set search_path = public
 as $$
   select c.id
   from contacts c
@@ -53,6 +54,7 @@ create or replace function fn_contact_has_linked_patients(
 )
 returns boolean
 language sql
+set search_path = public
 as $$
   select exists (
     select 1
@@ -79,6 +81,7 @@ create or replace function fn_patient_belongs_to_contact(
 )
 returns boolean
 language sql
+set search_path = public
 as $$
   select exists (
     select 1
@@ -115,6 +118,7 @@ returns table (
   is_active boolean
 )
 language sql
+set search_path = public
 as $$
   select
     v.appointment_id,
@@ -140,6 +144,7 @@ create or replace function fn_booking_matches_specialist_code(
 )
 returns boolean
 language sql
+set search_path = public
 as $$
   select exists (
     select 1
@@ -168,6 +173,7 @@ returns table (
   can_insert boolean
 )
 language sql
+set search_path = public
 as $$
   with evaluated as (
     select

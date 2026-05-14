@@ -9,6 +9,7 @@ create extension if not exists pgcrypto;
 create or replace function set_updated_at()
 returns trigger
 language plpgsql
+set search_path = public
 as $$
 begin
   new.updated_at := now();
@@ -20,6 +21,7 @@ create or replace function normalize_phone_e164(raw_phone text)
 returns text
 language plpgsql
 immutable
+set search_path = public
 as $$
 declare
   digits text;
@@ -54,6 +56,7 @@ create or replace function normalize_phone_digits(raw_phone text)
 returns text
 language plpgsql
 immutable
+set search_path = public
 as $$
 declare
   digits text;
@@ -460,6 +463,7 @@ where lower(coalesce(p.window_type, '')) = pw.code
 create or replace function tg_sync_appointment_types()
 returns trigger
 language plpgsql
+set search_path = public
 as $$
 begin
   if new.source_type_id is null and new.source is not null then
@@ -497,6 +501,7 @@ for each row execute function tg_sync_appointment_types();
 create or replace function tg_sync_contact_patient_link_types()
 returns trigger
 language plpgsql
+set search_path = public
 as $$
 begin
   if new.relationship_type_id is null and new.relationship_type is not null then
@@ -525,6 +530,7 @@ for each row execute function tg_sync_contact_patient_link_types();
 create or replace function tg_sync_specialist_policy_types()
 returns trigger
 language plpgsql
+set search_path = public
 as $$
 begin
   if new.policy_scope_type_id is null and new.policy_scope is not null then
@@ -558,6 +564,7 @@ for each row execute function tg_sync_specialist_policy_types();
 create or replace function tg_sync_channel_message_types()
 returns trigger
 language plpgsql
+set search_path = public
 as $$
 begin
   if new.source_type_id is null and new.source is not null then
@@ -591,6 +598,7 @@ for each row execute function tg_sync_channel_message_types();
 create or replace function tg_sync_appointment_event_types()
 returns trigger
 language plpgsql
+set search_path = public
 as $$
 begin
   if new.source_type_id is null and new.source is not null then
@@ -639,6 +647,7 @@ for each row execute function tg_sync_appointment_event_types();
 create or replace function tg_sync_contacts_phone()
 returns trigger
 language plpgsql
+set search_path = public
 as $$
 begin
   if new.phone_e164 is null and new.wa_id is not null then
@@ -660,6 +669,7 @@ for each row execute function tg_sync_contacts_phone();
 create or replace function tg_sync_patients_phone()
 returns trigger
 language plpgsql
+set search_path = public
 as $$
 begin
   new.phone_e164 := normalize_phone_e164(new.phone_e164);
@@ -801,6 +811,7 @@ create or replace function fn_find_window_conflict_appointment(
 )
 returns uuid
 language plpgsql
+set search_path = public
 as $$
 declare
   v_policy_scope text;
@@ -913,6 +924,7 @@ $$;
 create or replace function tg_enforce_duplicate_policy()
 returns trigger
 language plpgsql
+set search_path = public
 as $$
 declare
   v_conflict_id uuid;
@@ -1029,6 +1041,7 @@ returns table (
   source text
 )
 language sql
+set search_path = public
 as $$
   select
     v.appointment_id,
@@ -1057,6 +1070,7 @@ create or replace function fn_cancel_appointment_by_booking_uid(
 )
 returns uuid
 language plpgsql
+set search_path = public
 as $$
 declare
   v_appointment_id uuid;
@@ -1118,6 +1132,7 @@ create or replace function fn_reschedule_appointment_by_booking_uid(
 )
 returns uuid
 language plpgsql
+set search_path = public
 as $$
 declare
   v_appointment_id uuid;
@@ -1180,6 +1195,7 @@ create or replace function fn_find_duplicate_active_appointment(
 )
 returns uuid
 language sql
+set search_path = public
 as $$
   select a.id
   from appointments a

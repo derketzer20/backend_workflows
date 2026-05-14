@@ -80,6 +80,7 @@ comment on column specialists.specialist_code_id is
 create or replace function tg_specialists_link_specialist_code()
 returns trigger
 language plpgsql
+set search_path = public
 as $$
 declare
   v_code text;
