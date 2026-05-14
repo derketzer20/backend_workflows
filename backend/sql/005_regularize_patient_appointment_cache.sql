@@ -148,7 +148,9 @@ on appointments
 for each row execute function tg_appointments_refresh_patient_cache();
 
 -- ---------- Vista (misma definición que 004) ----------
-create or replace view v_patients_with_contact_role as
+create or replace view v_patients_with_contact_role
+with (security_invoker = true)
+as
 select
   p.id as patient_id,
   p.tenant_id,

@@ -4,7 +4,9 @@
 
 -- ---------- Vista: cita + código de especialista (validación "con qué doctor") ----------
 
-create or replace view v_booking_with_specialist as
+create or replace view v_booking_with_specialist
+with (security_invoker = true)
+as
 select
   a.id as appointment_id,
   a.tenant_id,

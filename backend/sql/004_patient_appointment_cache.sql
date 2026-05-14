@@ -304,7 +304,9 @@ $$;
 
 
 
-create or replace view v_patients_with_contact_role as
+create or replace view v_patients_with_contact_role
+with (security_invoker = true)
+as
 
 select
 

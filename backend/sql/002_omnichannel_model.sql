@@ -958,7 +958,10 @@ for each row execute function tg_enforce_duplicate_policy();
 
 -- ---------- Operational views ----------
 
-create or replace view v_active_appointments as
+-- security_invoker: RLS y permisos se evalúan como el usuario que consulta (Supabase / PG15+).
+create or replace view v_active_appointments
+with (security_invoker = true)
+as
 select
   a.id,
   a.tenant_id,
@@ -977,7 +980,9 @@ from appointments a
 where a.deleted_at is null
   and a.status in ('pending', 'confirmed', 'rescheduled');
 
-create or replace view v_contact_active_appointments as
+create or replace view v_contact_active_appointments
+with (security_invoker = true)
+as
 with linked_patients as (
   select cpl.tenant_id, cpl.contact_id, cpl.patient_id
   from contact_patient_links cpl
