@@ -359,7 +359,6 @@ alter table patients
 alter table appointments
   add column if not exists source_type_id smallint references appointment_source_types(id),
   add column if not exists status_type_id smallint references appointment_status_types(id),
-  add column if not exists appointment_type_id smallint references appointment_types(id),
   add column if not exists location_id uuid references locations(id),
   add column if not exists reason text,
   add column if not exists cancel_reason text,
@@ -410,9 +409,6 @@ set status_type_id = ss.id
 from appointment_status_types ss
 where lower(coalesce(a.status, '')) = ss.code
   and a.status_type_id is null;
-
-update appointments
-set appointment_type_id = coalesce(appointment_type_id, 1);
 
 update appointment_events e
 set source_type_id = st.id
@@ -484,17 +480,13 @@ begin
     select code into new.status from appointment_status_types where id = new.status_type_id;
   end if;
 
-  if new.appointment_type_id is null then
-    new.appointment_type_id := 1;
-  end if;
-
   return new;
 end;
 $$;
 
 drop trigger if exists trg_sync_appointment_types on appointments;
 create trigger trg_sync_appointment_types
-before insert or update of source, source_type_id, status, status_type_id, appointment_type_id
+before insert or update of source, source_type_id, status, status_type_id
 on appointments
 for each row execute function tg_sync_appointment_types();
 

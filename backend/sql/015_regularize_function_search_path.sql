@@ -36,6 +36,8 @@ declare
     'fn_reschedule_appointment_by_booking_uid',
     'fn_find_duplicate_active_appointment',
     'fn_resolve_contact_id_by_phone_digits',
+    'fn_get_contact_phone_payload_json',
+    'fn_appointment_is_active_by_now',
     'fn_contact_has_linked_patients',
     'fn_patient_belongs_to_contact',
     'fn_get_booking_snapshot',

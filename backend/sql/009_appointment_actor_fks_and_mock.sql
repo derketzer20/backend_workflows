@@ -132,7 +132,7 @@ $$;
 
 select _009_add_fk_if_missing('appointments', 'source_type_id', 'fk_appointments_source_type_id', 'appointment_source_types', 'id');
 select _009_add_fk_if_missing('appointments', 'status_type_id', 'fk_appointments_status_type_id', 'appointment_status_types', 'id');
-select _009_add_fk_if_missing('appointments', 'appointment_type_id', 'fk_appointments_appointment_type_id', 'appointment_types', 'id');
+-- appointment_type_id eliminado en 019; ya no se añade FK a appointment_types.
 select _009_add_fk_if_missing('appointments', 'location_id', 'fk_appointments_location_id', 'locations', 'id');
 select _009_add_fk_if_missing('appointment_events', 'source_type_id', 'fk_appointment_events_source_type_id', 'appointment_source_types', 'id');
 select _009_add_fk_if_missing('appointment_events', 'event_type_id', 'fk_appointment_events_event_type_id', 'appointment_event_types', 'id');

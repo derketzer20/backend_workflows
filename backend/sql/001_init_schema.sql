@@ -200,7 +200,6 @@ create table if not exists appointments (
   source_type_id smallint references appointment_source_types(id),
   status text not null check (status in ('pending', 'confirmed', 'rescheduled', 'cancelled', 'no_show', 'completed')),
   status_type_id smallint references appointment_status_types(id),
-  appointment_type_id smallint references appointment_types(id),
   booking_uid text,
   starts_at timestamptz,
   ends_at timestamptz,
@@ -212,8 +211,7 @@ create table if not exists appointments (
 -- Bases creadas con una version anterior de 001 (sin *_type_id): agregar columnas.
 alter table appointments
   add column if not exists source_type_id smallint references appointment_source_types(id),
-  add column if not exists status_type_id smallint references appointment_status_types(id),
-  add column if not exists appointment_type_id smallint references appointment_types(id);
+  add column if not exists status_type_id smallint references appointment_status_types(id);
 
 create unique index if not exists idx_appointments_booking_uid
   on appointments (tenant_id, booking_uid)
